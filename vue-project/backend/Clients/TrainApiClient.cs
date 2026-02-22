@@ -4,17 +4,8 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace backend.Clients;
 
-public class TrainApiClient : ITrainApiClient
+public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) : ITrainApiClient
 {
-    private readonly HttpClient _client;
-    private readonly ILogger<TrainApiClient> _logger;
-
-    public TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger)
-    {
-        _client = client;
-        _logger = logger;
-    }
-
     public async Task<List<JourneyResponse>> FetchJourneysAsync(
         string from,
         string to,
@@ -52,17 +43,17 @@ public class TrainApiClient : ITrainApiClient
        HttpResponseMessage response;
        try
        {
-           response = await _client.GetAsync(url);
+           response = await client.GetAsync(url);
        }
        catch (Exception ex)
        {
-           _logger.LogError(ex, "Error fetching journeys");
+           logger.LogError(ex, "Error fetching journeys");
            return new List<JourneyResponse>();
        }
 
        if (!response.IsSuccessStatusCode)
        {
-           _logger.LogError("Error fetching journeys");
+           logger.LogError("Error fetching journeys");
            return new List<JourneyResponse>();
        }
        
@@ -74,11 +65,11 @@ public class TrainApiClient : ITrainApiClient
                PropertyNameCaseInsensitive = true
            });
            
-           return result?.Journeys;
+           return result?.Journeys ?? new List<JourneyResponse>();;
        }
        catch (Exception ex)
        {
-           _logger.LogError(ex, "Error fetching journeys");
+           logger.LogError(ex, "Error fetching journeys");
            return new List<JourneyResponse>();
        }
     }
@@ -97,15 +88,15 @@ public class TrainApiClient : ITrainApiClient
 
         try
         {
-            response = await _client.GetAsync(url);
+            response = await client.GetAsync(url);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching Journeys");
+            logger.LogError(ex, "Error fetching Journeys");
             return string.Empty;
         }
         
-        _logger.LogInformation("Journeys fetched");
+        logger.LogInformation("Journeys fetched");
 
         if (!response.IsSuccessStatusCode)
             return string.Empty;
@@ -123,7 +114,7 @@ public class TrainApiClient : ITrainApiClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching Station");
+            logger.LogError(ex, "Error fetching Station");
             return string.Empty;
         }
         return data;

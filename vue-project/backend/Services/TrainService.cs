@@ -3,19 +3,12 @@ using backend.Model;
 
 namespace backend.Services;
 
-public class TrainService : ITrainService
+public class TrainService(ITrainApiClient client) : ITrainService
 {
-    private ITrainApiClient _client;
-    
-    public TrainService(ITrainApiClient client)
-    {
-        _client = client;
-    }
-
     public Task<JourneyResponse> GetJourneysAsync()
     {
         return null;
     }
 
-    public Task<string> GetStationIdAsync(string station) => _client.FetchStationId(station);
+    public Task<string> GetStationIdAsync(string station) => client.FetchStationId(station);
 } 

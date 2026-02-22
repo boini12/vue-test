@@ -57,6 +57,8 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
            return new List<JourneyResponse>();
        }
        
+       logger.LogInformation("Journeys fetched");
+       
        var json = await response.Content.ReadAsStringAsync();
        try
        {
@@ -82,7 +84,7 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
             ["results"] = "1"
         };
         
-        var url = QueryHelpers.AddQueryString("locations", query);
+        var url = QueryHelpers.AddQueryString("locations", query!);
 
         HttpResponseMessage response;
 
@@ -95,18 +97,18 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
             logger.LogError(ex, "Error fetching Journeys");
             return string.Empty;
         }
-        
-        logger.LogInformation("Journeys fetched");
 
         if (!response.IsSuccessStatusCode)
             return string.Empty;
+        
+        logger.LogInformation("Journeys fetched");
         
         var data = await response.Content.ReadAsStringAsync();
 
         try
         {
             // API returns an array of stations, even though it will only hold one item
-            // because the Id is unqiue.
+            // because the id is unique.
             var stationObjs = JsonSerializer.Deserialize<List<Station>>(data, new JsonSerializerOptions 
                 { PropertyNameCaseInsensitive = true }
             );

@@ -1,5 +1,5 @@
+using backend.Model;
 using backend.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -11,7 +11,12 @@ public class TrainController(ITrainService service) : ControllerBase
     [HttpGet("id/{journeys")]
     public async Task<IActionResult> GetJourneysAsync()
     {
-        var result = await service.GetJourneysAsync();
+        string from = "Berlin Hbf";
+        string to = "Hamburg Hbf";
+        JourneyTimeSelection journeyTimeSelection = JourneyTimeSelection.Arrival;
+        DateTime travelDate = DateTime.Today;
+        
+        var result = await service.GetJourneysAsync(from, to, journeyTimeSelection, travelDate);
         return Ok(result);
     }
 

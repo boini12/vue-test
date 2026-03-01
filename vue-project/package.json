@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "vuejs-datepicker": "^0.9.29",
+    "vuejs3-datepicker": "^1.1.3"
+  }
+}

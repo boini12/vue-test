@@ -21,14 +21,6 @@ builder.Services.AddScoped<ITrainService, TrainService>();
 
 var app = builder.Build();
 
-// // Run a test request using DI
-// using (var scope = app.Services.CreateScope())
-// {
-//     var client = scope.ServiceProvider.GetRequiredService<ISoccerApiClient>();
-//     var result = await client.FetchBundesligaMatches(DateTime.Now);
-//     Console.WriteLine($"Test result: {result}");
-// }
-
 app.UseHttpsRedirection();
 app.MapControllers();
 

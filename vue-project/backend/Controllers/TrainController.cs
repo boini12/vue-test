@@ -8,7 +8,7 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class TrainController(ITrainService service) : ControllerBase
 {
-    [HttpGet("id/{journeys")]
+    [HttpGet("id/{journeys}")]
     public async Task<IActionResult> GetJourneysAsync()
     {
         string from = "Berlin Hbf";

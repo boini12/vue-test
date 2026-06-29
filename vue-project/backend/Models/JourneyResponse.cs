@@ -2,5 +2,5 @@ namespace backend.Model;
 
 public record JourneyResponse
 {
-    public required List<JourneyResponse> Journeys { get; init; }
+    public required List<Journey> Journeys { get; init; }
 }

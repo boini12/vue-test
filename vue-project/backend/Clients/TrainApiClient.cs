@@ -6,7 +6,7 @@ namespace backend.Clients;
 
 public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) : ITrainApiClient
 {
-    public async Task<List<JourneyResponse>> FetchJourneysAsync(
+    public async Task<List<Journey>> FetchJourneysAsync(
         string from,
         string to,
         JourneyTimeSelection journeyTimeSelection,
@@ -38,23 +38,24 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
             ["stopovers"] = "true",
        };
        
-       var url = QueryHelpers.AddQueryString("journeys", parameters!);
+       var path = QueryHelpers.AddQueryString("journeys", parameters!);
+       var fullUrl = new Uri(client.BaseAddress!, path);
 
        HttpResponseMessage response;
        try
        {
-           response = await client.GetAsync(url);
+           response = await client.GetAsync(fullUrl);
        }
        catch (Exception ex)
        {
            logger.LogError(ex, "Error fetching journeys");
-           return new List<JourneyResponse>();
+           return new List<Journey>();
        }
 
        if (!response.IsSuccessStatusCode)
        {
            logger.LogError("Error fetching journeys");
-           return new List<JourneyResponse>();
+           return new List<Journey>();
        }
        
        logger.LogInformation("Journeys fetched");
@@ -67,12 +68,12 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
                PropertyNameCaseInsensitive = true
            });
            
-           return result?.Journeys ?? new List<JourneyResponse>();;
+           return result?.Journeys ?? new List<Journey>();;
        }
        catch (Exception ex)
        {
            logger.LogError(ex, "Error fetching journeys");
-           return new List<JourneyResponse>();
+           return new List<Journey>();
        }
     }
 
@@ -84,13 +85,14 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
             ["results"] = "1"
         };
         
-        var url = QueryHelpers.AddQueryString("locations", query!);
+        var path = QueryHelpers.AddQueryString("locations", query!);
+        var fullUrl = new Uri(client.BaseAddress!, path);
 
         HttpResponseMessage response;
 
         try
         {
-            response = await client.GetAsync(url);
+            response = await client.GetAsync(fullUrl);
         }
         catch (Exception ex)
         {

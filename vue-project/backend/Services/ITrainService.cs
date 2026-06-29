@@ -4,7 +4,7 @@ namespace backend.Services;
 
 public interface ITrainService
 {
-    Task<List<JourneyResponse>> GetJourneysAsync(
+    Task<List<Journey>> GetJourneysAsync(
         string from,
         string to,
         JourneyTimeSelection journeyTimeSelection,

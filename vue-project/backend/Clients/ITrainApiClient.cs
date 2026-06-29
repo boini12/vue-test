@@ -4,7 +4,7 @@ namespace backend.Clients;
 
 public interface ITrainApiClient
 {
-    Task<List<JourneyResponse>> FetchJourneysAsync(
+    Task<List<Journey>> FetchJourneysAsync(
         string from,
         string to,
         JourneyTimeSelection journeyTimeSelection,

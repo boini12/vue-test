@@ -42,6 +42,18 @@ The frontend's `JourneysView.vue` calls the backend at a hardcoded
 `http://localhost:5025/api/train/journeys` — the backend must be running on that exact
 port for the app to work end to end.
 
+### Running from VS Code
+
+`.vscode/launch.json` and `.vscode/tasks.json` at the repo root provide a one-click way to
+run both processes together:
+- Open the Run and Debug panel and pick **"Full Stack (backend + frontend)"**, then hit F5.
+  This runs the `Backend (.NET)` config (builds `backend.csproj` via the `backend: build`
+  task, then launches it with the debugger attached — breakpoints in C# work) and the
+  `Frontend (npm serve)` config (runs `npm run serve` in an integrated terminal) together
+  as a compound launch.
+- The backend debug config requires the **C# Dev Kit** extension (listed in
+  `.vscode/extensions.json`) for the `coreclr` debug type to be available.
+
 ## Backend architecture
 
 Minimal-hosting style: `Startup.cs` (despite the name, this is the `Program.cs`-equivalent

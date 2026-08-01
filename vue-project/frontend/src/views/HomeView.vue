@@ -39,9 +39,9 @@ const swapCities = () => {
       <h1 class="heading">Enter your travel details and find out if any fans are taking your train!</h1>
 
       <div class="route-group">
-        <div class="route-row">
+        <div class="field">
           <span class="label">Origin</span>
-          <select v-model="selectedOrigin" class="city-select">
+          <select v-model="selectedOrigin" class="value-select">
             <option v-for="city in cities" :key="city">{{ city }}</option>
           </select>
         </div>
@@ -52,22 +52,27 @@ const swapCities = () => {
           </svg>
         </button>
 
-        <div class="route-row">
+        <div class="field">
           <span class="label">Destination</span>
-          <select v-model="selectedDestination" class="city-select">
+          <select v-model="selectedDestination" class="value-select">
             <option v-for="city in cities" :key="city">{{ city }}</option>
           </select>
         </div>
       </div>
 
       <div class="departure-row">
-        <select v-model="timeSelection" class="time-type-select">
-          <option>Departure</option>
-          <option>Arrival</option>
-        </select>
-        <div class="date-time-pills">
-          <Datepicker v-model="state.date" class="date-pill" />
-          <input type="time" v-model="selectedTime" class="time-pill" />
+        <div class="field type-field">
+          <span class="label">When</span>
+          <select v-model="timeSelection" class="value-select">
+            <option>Departure</option>
+            <option>Arrival</option>
+          </select>
+        </div>
+        <div class="field date-field">
+          <Datepicker v-model="state.date" />
+        </div>
+        <div class="field time-field">
+          <input type="time" v-model="selectedTime" class="time-input" />
         </div>
       </div>
 
@@ -77,13 +82,26 @@ const swapCities = () => {
 </template>
 
 <style scoped>
+/* One shared design language for every control on this page:
+   same surface, same border, same radius, same focus ring. */
 .page {
+  --accent: #7c3aed;
+  --accent-strong: #6d28d9;
+  --accent-soft: #ede9fe;
+  --surface: #ffffff;
+  --border: #e2ddec;
+  --text: #1c1830;
+  --text-muted: #6b6580;
+  --radius: 14px;
+  --control-height: 60px;
+
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: #0a0a0a;
+  background: #f4f2f8;
+  color-scheme: light;
 }
 
 .card {
@@ -98,10 +116,65 @@ const swapCities = () => {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: clamp(1.6rem, 5vw, 2.2rem);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text);
   text-align: center;
   line-height: 1.25;
   margin: 0 0 8px;
+}
+
+/* Shared control shell */
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: var(--control-height);
+  padding: 0 18px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field:hover {
+  border-color: #cfc6e4;
+}
+
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.value-select,
+.time-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.value-select {
+  text-align: right;
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+.time-input {
+  width: 100%;
+  text-align: center;
 }
 
 /* Route group */
@@ -112,42 +185,6 @@ const swapCities = () => {
   gap: 8px;
 }
 
-.route-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1.5px solid #6366f1;
-  border-radius: 12px;
-  padding: 18px 20px;
-  background: #111111;
-  gap: 12px;
-}
-
-.label {
-  color: #e5e7eb;
-  font-size: 1rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.city-select {
-  background: transparent;
-  border: none;
-  color: #e5e7eb;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  text-align: right;
-  appearance: auto;
-  -webkit-appearance: auto;
-}
-
-.city-select option {
-  background: #1a1a2e;
-  color: #e5e7eb;
-}
-
 .swap-btn {
   position: absolute;
   right: -12px;
@@ -156,7 +193,7 @@ const swapCities = () => {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--accent);
   border: none;
   color: #ffffff;
   display: flex;
@@ -165,96 +202,127 @@ const swapCities = () => {
   cursor: pointer;
   z-index: 1;
   transition: background 0.2s;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
 }
 
 .swap-btn:hover {
-  background: #4f46e5;
+  background: var(--accent-strong);
 }
 
 /* Departure row */
 .departure-row {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.time-type-select {
-  background: transparent;
-  border: none;
-  color: #e5e7eb;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  appearance: auto;
-  -webkit-appearance: auto;
-  padding: 2px 0;
-  flex-shrink: 0;
-}
-
-.time-type-select option {
-  background: #1a1a2e;
-  color: #e5e7eb;
-}
-
-.date-time-pills {
-  display: flex;
+  align-items: stretch;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.date-pill :deep(input),
-.time-pill {
-  background: #1e1e1e;
+.type-field {
+  flex: 1 1 100%;
+}
+
+.date-field,
+.time-field {
+  flex: 1 1 0;
+  min-width: 140px;
+  justify-content: center;
+}
+
+/* The datepicker ships its own bordered box and a green accent —
+   strip the box so `.field` is the only shell, and repaint it purple. */
+.date-field :deep(.vuejs3-datepicker) {
+  display: block;
+  width: 100%;
+}
+
+.date-field :deep(.vuejs3-datepicker__value) {
   border: none;
-  border-radius: 999px;
-  color: #e5e7eb;
-  font-size: 0.95rem;
-  padding: 10px 18px;
-  cursor: pointer;
-  outline: none;
+  border-radius: 0;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.date-pill :deep(input):focus,
-.time-pill:focus {
-  outline: 2px solid #6366f1;
+.date-field :deep(.vuejs3-datepicker__content) {
+  margin-left: 8px;
+  font-size: 1rem;
 }
 
-.time-pill {
-  color-scheme: dark;
+.date-field :deep(.vuejs3-datepicker__icon svg) {
+  color: var(--text-muted);
 }
 
-/* CTA */
+.date-field :deep(.vuejs3-datepicker__calendar) {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(28, 24, 48, 0.12);
+  overflow: hidden;
+}
+
+.date-field :deep(.vuejs3-datepicker__calendar-topbar) {
+  background-color: var(--accent);
+  border-radius: 0;
+}
+
+.date-field :deep(.vuejs3-datepicker__calendar .cell.selected),
+.date-field :deep(.vuejs3-datepicker__calendar .cell.selected:hover),
+.date-field :deep(.vuejs3-datepicker__calendar .cell.highlighted) {
+  background: var(--accent);
+  color: #fff;
+}
+
+.date-field :deep(.vuejs3-datepicker__calendar .cell:not(.blank):not(.disabled).day:hover),
+.date-field :deep(.vuejs3-datepicker__calendar .cell:not(.blank):not(.disabled).month:hover),
+.date-field :deep(.vuejs3-datepicker__calendar .cell:not(.blank):not(.disabled).year:hover) {
+  border: 1px solid var(--accent);
+}
+
+/* CTA — same radius as the fields, filled with the accent */
 .cta-btn {
   width: 100%;
+  min-height: var(--control-height);
   padding: 16px;
-  border-radius: 999px;
-  background: #6366f1;
+  border-radius: var(--radius);
+  background: var(--accent);
   color: #ffffff;
+  font-family: inherit;
   font-size: 1.05rem;
   font-weight: 700;
-  border: none;
+  border: 1.5px solid var(--accent);
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
   margin-top: 4px;
 }
 
 .cta-btn:hover {
-  background: #4f46e5;
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
 }
 
 .cta-btn:active {
   transform: scale(0.98);
 }
 
+.cta-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
 @media (min-width: 640px) {
   .card {
     gap: 24px;
   }
-  .route-row {
-    padding: 20px 24px;
+  .field {
+    padding: 0 22px;
+  }
+  .type-field {
+    flex: 0 0 auto;
   }
 }
 </style>

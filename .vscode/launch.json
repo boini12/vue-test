@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend (.NET)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "backend: build",
+      "program": "${workspaceFolder}/vue-project/backend/bin/Debug/net10.0/backend.dll",
+      "cwd": "${workspaceFolder}/vue-project/backend",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Frontend (npm serve)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run serve",
+      "cwd": "${workspaceFolder}/vue-project/frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack (backend + frontend)",
+      "configurations": ["Backend (.NET)", "Frontend (npm serve)"],
+      "stopAll": true
+    }
+  ]
+}

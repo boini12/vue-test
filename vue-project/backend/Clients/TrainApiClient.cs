@@ -121,6 +121,5 @@ public class TrainApiClient(HttpClient client, ILogger<TrainApiClient> logger) :
             logger.LogError(ex, "Error fetching Station");
             return string.Empty;
         }
-        return data;
     }
 }
